@@ -1,6 +1,4 @@
-# 출처: https://gist.github.com/mf1024/430d7fd6ff527350d3e4b5bda0d8614e
-# https://discuss.huggingface.co/t/fine-tuning-gpt2-for-movie-script-generation-in-pytorch/23906
-# https://gist.github.com/mf1024/3df214d2f17f3dcc56450ddf0d5a4cd7
+
 import logging
 logging.getLogger().setLevel(logging.CRITICAL)
 
