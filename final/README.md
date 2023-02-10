@@ -47,8 +47,8 @@ diffusion
  ## 3. evaluate.py 
   - 트레이닝 시킨 모델을 blue Score로 평가하는 .py 
  
- <hr>
- ## 4. main.py 
+ <hr>   
+ ## 4. api.py
   - 사용할 API 또는 모델로 번역(한국어-> 영어) 와  diffusion model이 잘 인식 할 수 있는 prompt message로 처리 하는 .py 
  
  <hr>
