@@ -1,17 +1,25 @@
-# 출처: https://bo-10000.tistory.com/154
-# 출처: https://flonelin.wordpress.com/2021/11/29/transformers-trainer%EC%97%90%EC%84%9C-earlys-stopping-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0/
 
-from src.data.utils import  *
-from src.model.model import * 
-from transformers import Trainer, TrainingArguments
-# from pytorch_lightning import Trainer
+from src.data.utils import  CustomDataset, split_dataSet
+from src.model.model import model_print
+from transformers import Trainer, TrainingArguments  
 from pytorch_lightning.callbacks import ModelCheckpoint
-from torchtext.data.metrics import bleu_score
+import os 
 
+tokenizer, model = model_print()
+data_path = "./src/data"
+ko_dir = os.path.join(data_path,"ko_shuffle.txt")
+en_dir = os.path.join(data_path, "en_shuffle.txt")  
+
+with open(ko_dir, 'r', encoding='UTF-8') as f:
+  ko_text = f.readlines()
+with open(en_dir, 'r', encoding='UTF-8') as f:
+  en_text = f.readlines()    
 
 dataSet = CustomDataset(ko_text, en_text, tokenizer) 
 
-train_data, valid_data, test_data = split_dataSet(dataSet, 0.5, 0.3)
+train_data, valid_data, test_data = split_dataSet(dataSet, 0.7, 0.2)
+
+
 
 try:
   if not os.path.exists('./output'):
@@ -19,10 +27,9 @@ try:
 except:
    pass  
 
-# fine-tuning the model  
-
+# fine-tuning the model   
 training_args = TrainingArguments(
-    output_dir='./checkpoint', # checkpoint는 checkpoint 폴더 아래에다가 
+    output_dir='./checkpoint', 
     num_train_epochs=2,
     evaluation_strategy = "epoch",
     learning_rate=2e-5,
@@ -47,11 +54,8 @@ trainer = Trainer(
     eval_dataset=valid_data,    
 )      
 
-if __name__ == "__main__":
-    # 트레이닝 시키고 
-    trainer.train()
-    # 모델을 저장한다
-    trainer.save_model('./output')   
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model.to(device)
-    
+if __name__ == "__main__":   
+    trainer.train()   
+    trainer.save_model('./output')
+
+ 
