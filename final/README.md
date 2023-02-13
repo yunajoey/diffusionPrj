@@ -52,17 +52,16 @@ final
  ## 8. checkpoint 폴더 
  - checkpoint가 기록이 되는 폴더   
   
-=====================================================================================================================
-how to use it?
+# 사용법
 
  
-1. API를 사용할 경우 
+## 1. API를 사용할 경우 
 - command창에 python main.py 치면 google API(default)로 바로 번역됨 
 - 다른 API를 사용하고 싶으면 python main.py --api [사용할 API이름] 치면됨 
 
 
 
-2. model을 사용할 경우 
+## 2. model을 사용할 경우 
 - python train.py로 모델을 훈련시킨다 
 
 
