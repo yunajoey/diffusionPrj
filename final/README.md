@@ -29,11 +29,11 @@ final
  - 사용할 API, model, data가 있는 폴더이다<br>
  1-1) API폴더에는 naver, google, python 내장 번역 API가 있다<br>
  1-2) model 폴더에는 hugging face에서 translate 할 수 있는 모델이 있는 폴더가 있다<br>
- 1-3) data 폴더에는 sample_data.json(데이터갯수: 약 100개), dataSet.json(데이터갯수: 약 3만개)<br>
- 
+ 1-3) data 폴더에는 sample_data.json(데이터갯수: 약 100개), dataSet.json(데이터갯수: 약 3만개)<br>   
  <hr>
 ## 2. train.py 
- - model를 트레이닝 시키는 .py   
+ - model를 트레이닝 시키는 .py  
+ <hr> 
 
 ## 3. evaluate.py 
  - 트레이닝 시킨 모델을 blue Score로 평가하는 .py   
