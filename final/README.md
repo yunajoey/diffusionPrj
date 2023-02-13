@@ -36,16 +36,24 @@ final
   - model를 트레이닝 시키는 .py 
  
  <hr>
- ## 3. evaluate.py 
-  - 트레이닝 시킨 모델을 blue Score로 평가하는 .py 
+## 3. evaluate.py 
+- 트레이닝 시킨 모델을 blue Score로 평가하는 .py 
  
  <hr>   
- ## 4. api.py
-  - 사용할 API 또는 모델로 번역(한국어-> 영어) 와  diffusion model이 잘 인식 할 수 있는 prompt message로 처리 하는 .py 
+## 4. api.py
+- 사용할 API(naver, google, python 내장)가 있는 .py   
+ <hr>  
  
- <hr>
+## 5. api.py
+- 사용할 API(naver, google, python 내장)가 있는 .py
+  
+## 6. main.py
+ - dffusion_model에 들어갈 3가지 타입의 text 형태(수정하지않은 번역 text, 태깅작업한 번역 text, magic_word를 넣은 번역 text)를 json 파일로 ouput하는 .py
  
- ## 5. output폴더 
+ ## 6. output폴더 
  - 훈련한 model를 저장하는 폴더
+ 
+ ## 7. checkpoint 폴더 
+ - checkpoint가 기록이 되는 폴더
  
 
