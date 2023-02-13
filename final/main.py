@@ -6,10 +6,12 @@ import torch
 from nltk.data import load
 from nltk.tokenize import word_tokenize  
 import random  
-from PIL import Image, ImageDraw
-from diffusers import StableDiffusionPipeline, AutoencoderKL
-from diffusers import UNet2DConditionModel, PNDMScheduler, LMSDiscreteScheduler
-from diffusers.schedulers.scheduling_ddim import DDIMScheduler
+import json
+
+# # diffuser와 관련된 모듈
+# from diffusers import StableDiffusionPipeline, AutoencoderKL
+# from diffusers import UNet2DConditionModel, PNDMScheduler, LMSDiscreteScheduler
+# from diffusers.schedulers.scheduling_ddim import DDIMScheduler
 
 # from src.data.utils import  *
 # from src.model.model import * 
@@ -60,58 +62,22 @@ def cleaned_text(translated_text:str, *args):
     return prompt_text +" , "+magic_words
 
 
+class text_json_file:
+  def __init__(self, original, custom, magic):
+    self.original = original 
+    self.custom = custom 
+    self.magic = magic   
 
-def different_img_result(original_text, customed_text, without_magic_word_text, n_pics):
-  original_prompt = [original_text] * n_pics 
-  customed_prompt = [customed_text] * n_pics 
-  without_magic_prompt = [without_magic_word_text] * n_pics
-  with autocast(device):
-     img1 = pipe(original_prompt, num_inference_steps=50).images
-     img2 = pipe(customed_prompt, num_inference_steps=50).images
-     img3 = pipe(without_magic_prompt, num_inference_steps=50).images
-  return img1, img2, img3
-
-
-def image_grid(imgs, rows, cols):
-  assert len(imgs) == rows*cols
-  w, h = imgs[0].size
-  grid = Image.new('RGB', size=(cols*w, rows*h))
-  grid_w, grid_h = grid.size
-
-  for i, img in enumerate(imgs):
-      grid.paste(img, box=(i%cols*w, i//cols*h))
-  return grid
-
-def get_concat_h_multi_resize(original, customed, magic_word, resample=Image.BICUBIC):
-    # original, customed, magic_word = different_img_result(original_text, customed_text, magic_word_text, 1)
-
-    img1 = image_grid(original, rows=1, cols=1)  
-    img2 = image_grid(customed, rows=1, cols=1)
-    img3 = image_grid(magic_word , rows=1, cols=1)   
-
-    im_list = [img1, img2, img3]     
-    min_height = min(im.height for im in im_list)
-    im_list_resize = [im.resize((int(im.width * min_height / im.height), min_height),resample=resample)
-                      for im in im_list]
-    total_width = sum(im.width for im in im_list_resize)
-    dst = Image.new('RGB', (total_width, min_height))
-    pos_x = 0
-    for im in im_list_resize:
-        dst.paste(im, (pos_x, 0))
-        pos_x += im.width
-    return dst
+  def convert_json(self):
+    return  {
+        'original': self.original, 
+        'custom': self.custom, 
+        'magic': self.magic
+    }   
 
 
 
-
-if __name__ == "__main__":   
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    
-    pipe = StableDiffusionPipeline.from_pretrained(
-        'CompVis/stable-diffusion-v1-4', revision='fp16',torch_dtype=torch.float16, use_auth_token=True)
-    pipe = pipe.to(device)
-
-
+if __name__ == "__main__":      
     df = pd.DataFrame(["버거킹을 먹는 여자아이",
                         "두명의 남자아이이가 놀이터에서 놀고 있는 그림",
                         "목도리와 모자를 쓴 눈사람",
@@ -127,5 +93,11 @@ if __name__ == "__main__":
     original_translated_list = df['Kor'].apply(google_translate).tolist() 
     customed_text_list = list(map(cleaned_text, original_translated_list))
     magic_word_text_list = list(map(magicword_text, original_translated_list))
+    data = {'data': json.dumps([text_json_file(obj[0], obj[1], obj[2]).convert_json() for obj in zip(original_translated_list, customed_text_list,magic_word_text_list)])}
+    json_data = open('.prompt_data.json', 'w')
+    json.dump(data, json_data, indent=4)
+    json_data.close()
+    
+
+
    
- 
