@@ -42,11 +42,16 @@ final
    
 ## 5. main.py
  - dffusion_model에 들어갈 3가지 타입의 text 형태(수정하지않은 번역 text, 태깅작업한 번역 text, magic_word를 넣은 번역 text)를 json 파일로 ouput하는 .py
+    
+## 6. diff.py
+ - main.py에서 처리한 결과(json파일)를 받아서 이미지를 나타내는 .py (이 파일은 colab또는 주피터 노트북에서 사용해야 합니당!) 
  
- ## 6. output폴더 
+ ## 7. output폴더 
  - 훈련한 model를 저장하는 폴더
  
- ## 7. checkpoint 폴더 
- - checkpoint가 기록이 되는 폴더
- 
+ ## 8. checkpoint 폴더 
+ - checkpoint가 기록이 되는 폴더   
+  
 
+ 
+ 
