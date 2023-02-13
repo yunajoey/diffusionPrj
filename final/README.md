@@ -62,7 +62,7 @@ final
 
 
 ## 2. model을 사용할 경우 
-- python train.py로 모델을 훈련시킨다 
+
 
 
 
