@@ -7,11 +7,7 @@ from nltk.data import load
 from nltk.tokenize import word_tokenize  
 import random  
 import json
-
-# # diffuser와 관련된 모듈
-# from diffusers import StableDiffusionPipeline, AutoencoderKL
-# from diffusers import UNet2DConditionModel, PNDMScheduler, LMSDiscreteScheduler
-# from diffusers.schedulers.scheduling_ddim import DDIMScheduler
+import argparse 
 
 # from src.data.utils import  *
 # from src.model.model import * 
@@ -73,9 +69,7 @@ class text_json_file:
         'original': self.original, 
         'custom': self.custom, 
         'magic': self.magic
-    }   
-
-
+    }     
 
 if __name__ == "__main__":      
     df = pd.DataFrame(["버거킹을 먹는 여자아이",
@@ -90,9 +84,32 @@ if __name__ == "__main__":
                         "놀이기구를 타려고 줄서고 있는 커플"]
                         , columns = ['Kor'])
     
-    original_translated_list = df['Kor'].apply(google_translate).tolist() 
-    customed_text_list = list(map(cleaned_text, original_translated_list))
-    magic_word_text_list = list(map(magicword_text, original_translated_list))
+       
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+       "--api", 
+       default='google',    
+       type=str,   
+    )
+    args = parser.parse_args()
+    try: 
+        if args.api == "google":                                                                    
+              original_translated_list = df['Kor'].apply(google_translate).tolist()   
+              customed_text_list = list(map(cleaned_text, original_translated_list))
+              magic_word_text_list = list(map(magicword_text, original_translated_list))
+
+        elif args.api == 'naver':             
+              original_translated_list = df['Kor'].apply(papago_api).tolist()   
+              customed_text_list = list(map(cleaned_text, original_translated_list))
+              magic_word_text_list = list(map(magicword_text, original_translated_list))
+
+        elif args.api == 'python':
+              original_translated_list = df['Kor'].apply(trans_lib).tolist()   
+              customed_text_list = list(map(cleaned_text, original_translated_list))
+              magic_word_text_list = list(map(magicword_text, original_translated_list))          
+           
+    except KeyError:
+       raise KeyError('선택하신 API는 리스트에 없습니다')  
     data = {'data': json.dumps([text_json_file(obj[0], obj[1], obj[2]).convert_json() for obj in zip(original_translated_list, customed_text_list,magic_word_text_list)])}
     json_data = open('.prompt_data.json', 'w')
     json.dump(data, json_data, indent=4)
