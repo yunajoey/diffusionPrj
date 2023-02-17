@@ -2,14 +2,18 @@
 # 프로젝트 폴더 구조 
 
 ```
+
+```
 final
 ├─ .gitignore
 ├─ checkpoint
-├─ evalute.py
+├─ eval.py
 ├─ main.py
 ├─ output
+├─ predict.py
 ├─ README.md
 ├─ requirements.txt
+├─ show_img.py
 ├─ src
 │  ├─ API
 │  │  └─ api.py
