@@ -42,3 +42,8 @@ Step3.(option)
 <b> 2. API를 사용할 경우 <b>
 - python main.py (default값이  google API)
 - python main.py --api [사용할API]
+
+-------------------------------------------------------
+사용가능한 모델 LIST들
+- QuoA
+
