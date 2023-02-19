@@ -8,20 +8,8 @@ from nltk.tokenize import word_tokenize
 import random  
 import json
 import argparse 
+from src.model.model import model_print
 
-# from src.data.utils import  *
-# from src.model.model import * 
-# from train import * 
-# from transformers import Trainer, TrainingArguments
-
-# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-# model = AutoModelForSeq2SeqLM.from_pretrained('./checkpoint/checkpoint-12')  
-# tokenizer = AutoTokenizer.from_pretrained('./checkpoint/checkpoint-12')
-# model.to(device)
-# inputs = tokenizer('안녕하세요', return_tensors="pt")
-# inputs.to(device)
-# output = model.generate(inputs["input_ids"])
-# tokenizer.decode(output[0].tolist())
 
 
 
@@ -57,6 +45,18 @@ def cleaned_text(translated_text:str, *args):
     magic_words = ",".join(list(args))
     return prompt_text +" , "+magic_words
 
+def return_lists(api_name):                                          
+    original_translated_list = df['Kor'].apply(api_name).tolist()   
+    customed_text_list = list(map(cleaned_text, original_translated_list))
+    magic_word_text_list = list(map(magicword_text, original_translated_list))
+    return original_translated_list, customed_text_list, magic_word_text_list
+
+def return_texts(model, tokenizer, sentence_list, device):
+    translate_input = tokenizer.prepare_seq2seq_batch(sentence_list, return_tensors="pt")
+    translate_input.to(device)
+    translated = model.generate(**translate_input)
+    trg_text = [tokenizer.decode(t, skip_special_tokens=True) for t in translated]
+    print(trg_text)
 
 class text_json_file:
   def __init__(self, original, custom, magic):
@@ -69,9 +69,10 @@ class text_json_file:
         'original': self.original, 
         'custom': self.custom, 
         'magic': self.magic
-    }     
+    }       
+if __name__ == "__main__":     
 
-if __name__ == "__main__":      
+    device = torch.device('cude:0' if torch.cuda.is_available() else 'cpu')   
     df = pd.DataFrame(["버거킹을 먹는 여자아이",
                         "두명의 남자아이이가 놀이터에서 놀고 있는 그림",
                         "목도리와 모자를 쓴 눈사람",
@@ -82,39 +83,59 @@ if __name__ == "__main__":
                         "네 감사합니다.",
                         "유명한 레스토랑에서 브런치를 먹는 사람들.",
                         "놀이기구를 타려고 줄서고 있는 커플"]
-                        , columns = ['Kor'])
-    
+                        , columns = ['Kor'])      
        
     parser = argparse.ArgumentParser()
     parser.add_argument(
-       "--api", 
-       default='google',    
+       "--api",          
+    #    default='google',    
        type=str,   
     )
-    args = parser.parse_args()
-    try: 
-        if args.api == "google":                                                                    
-              original_translated_list = df['Kor'].apply(google_translate).tolist()   
-              customed_text_list = list(map(cleaned_text, original_translated_list))
-              magic_word_text_list = list(map(magicword_text, original_translated_list))
 
-        elif args.api == 'naver':             
-              original_translated_list = df['Kor'].apply(papago_api).tolist()   
-              customed_text_list = list(map(cleaned_text, original_translated_list))
-              magic_word_text_list = list(map(magicword_text, original_translated_list))
+    parser.add_argument(
+       "--model",      
+       type=str,   
+    )   
+    
+    args = parser.parse_args()  
+
+if args.api != None:
+    try:
+        if args.api == "google":                                                                                        
+            original_translated_list = df['Kor'].apply(google_translate).tolist()   
+            customed_text_list = list(map(cleaned_text, original_translated_list))
+            magic_word_text_list = list(map(magicword_text, original_translated_list))
+
+        elif args.api == 'naver':      
+            original_translated_list = df['Kor'].apply(papago_api).tolist()   
+            customed_text_list = list(map(cleaned_text, original_translated_list))
+            magic_word_text_list = list(map(magicword_text, original_translated_list))  
 
         elif args.api == 'python':
-              original_translated_list = df['Kor'].apply(trans_lib).tolist()   
-              customed_text_list = list(map(cleaned_text, original_translated_list))
-              magic_word_text_list = list(map(magicword_text, original_translated_list))          
-           
+            original_translated_list = df['Kor'].apply(papago_api).tolist()   
+            customed_text_list = list(map(cleaned_text, original_translated_list))
+            magic_word_text_list = list(map(magicword_text, original_translated_list)) 
+                               
     except KeyError:
-       raise KeyError('선택하신 API는 리스트에 없습니다')  
+       raise KeyError('선택하신 API는 리스트에 없습니다')     
+
     data = {'data': json.dumps([text_json_file(obj[0], obj[1], obj[2]).convert_json() for obj in zip(original_translated_list, customed_text_list,magic_word_text_list)])}
     json_data = open('.prompt_data.json', 'w')
     json.dump(data, json_data, indent=4)
-    json_data.close()
+    json_data.close()    
+
+
+elif args.model != None: 
+    try: 
+        sentence_list = df['Kor'].tolist()
+        tokenizer, model = model_print(args.model)    
+        return_texts(model, tokenizer, sentence_list, device)
     
+    except KeyError:
+       raise KeyError('선택하신 모델은 리스트에 없습니다')  
+     
+ 
+
 
 
    
