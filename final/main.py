@@ -8,10 +8,7 @@ from nltk.tokenize import word_tokenize
 import random  
 import json
 import argparse 
-from src.model.model import model_print
-
-
-
+from src.model.model import model_print, MODEL_CLASSES, MODEL_NAMES_LIST
 
 magic_keywords = ['hdr, uhd, 64k', 'highly detailed', 'studio lighting', 'professional', 'trending on artstation', 
                   'unreal engine', 'vivid Colors', 'bokeh', 'sketch of', 'painting of']
@@ -56,7 +53,7 @@ def return_texts(model, tokenizer, sentence_list, device):
     translate_input.to(device)
     translated = model.generate(**translate_input)
     trg_text = [tokenizer.decode(t, skip_special_tokens=True) for t in translated]
-    print(trg_text)
+    return trg_text
 
 class text_json_file:
   def __init__(self, original, custom, magic):
@@ -70,8 +67,7 @@ class text_json_file:
         'custom': self.custom, 
         'magic': self.magic
     }       
-if __name__ == "__main__":     
-
+if __name__ == "__main__":  
     device = torch.device('cude:0' if torch.cuda.is_available() else 'cpu')   
     df = pd.DataFrame(["버거킹을 먹는 여자아이",
                         "두명의 남자아이이가 놀이터에서 놀고 있는 그림",
@@ -88,17 +84,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
        "--api",          
-    #    default='google',    
+       default='google',    
        type=str,   
     )
 
     parser.add_argument(
        "--model",      
        type=str,   
-    )   
-    
-    args = parser.parse_args()  
-
+    )        
+    args = parser.parse_args()   
 if args.api != None:
     try:
         if args.api == "google":                                                                                        
@@ -122,18 +116,22 @@ if args.api != None:
     data = {'data': json.dumps([text_json_file(obj[0], obj[1], obj[2]).convert_json() for obj in zip(original_translated_list, customed_text_list,magic_word_text_list)])}
     json_data = open('.prompt_data.json', 'w')
     json.dump(data, json_data, indent=4)
-    json_data.close()    
+    json_data.close()     
 
-
-elif args.model != None: 
-    try: 
+elif args.model != None:     
+    try:
         sentence_list = df['Kor'].tolist()
-        tokenizer, model = model_print(args.model)    
-        return_texts(model, tokenizer, sentence_list, device)
-    
+        # model_name = args.model in MODEL_NAMES_LIST.keys() # True
+        model_name = args.model
+        tokenizer, model = model_print(model_name) 
+        data = return_texts(model, tokenizer, sentence_list, device)   
+        json_data = open('.prompt_data.json', 'w')
+        json.dump(data, json_data, indent=4)
+        json_data.close()               
+
     except KeyError:
-       raise KeyError('선택하신 모델은 리스트에 없습니다')  
-     
+        raise KeyError("선택하신 모델은 list에 없습니다 ")  
+
  
 
 
