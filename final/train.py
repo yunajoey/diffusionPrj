@@ -1,8 +1,9 @@
-
+# https://github.com/Inju0716/ko-en-neural-machine-translation/blob/main/Huggingface_Pretrained_Model.ipynb
 from src.data.utils import  CustomDataset, split_dataSet
 from src.model.model import model_print
 from transformers import Trainer, TrainingArguments  
 from pytorch_lightning.callbacks import ModelCheckpoint
+from datasets import DatasetDict, load_from_disk
 import os 
 
 tokenizer, model = model_print()
@@ -15,11 +16,18 @@ with open(ko_dir, 'r', encoding='UTF-8') as f:
 with open(en_dir, 'r', encoding='UTF-8') as f:
   en_text = f.readlines()    
 
-dataSet = CustomDataset(ko_text, en_text, tokenizer) 
+# dataSet = CustomDataset(ko_text, en_text, tokenizer) 
 
-train_data, valid_data, test_data = split_dataSet(dataSet, 0.7, 0.2)
+# train_data, valid_data, test_data = split_dataSet(dataSet, 0.7, 0.2) 
 
-
+ 
+dataSet = CustomDataset(ko_text, en_text, tokenizer)  
+train_data, valid_data, test_data = split_dataSet(dataSet, 0.7, 0.2)  
+dataset = DatasetDict({
+    "train": train_data,
+    "validation": valid_data,
+    "test": test_data,
+})  
 
 try:
   if not os.path.exists('./output'):
@@ -54,8 +62,6 @@ trainer = Trainer(
     eval_dataset=valid_data,    
 )      
 
-if __name__ == "__main__":   
+if __name__ == "__main__":     
     trainer.train()   
     trainer.save_model('./output')
-
- 
