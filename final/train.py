@@ -1,12 +1,13 @@
 # https://github.com/Inju0716/ko-en-neural-machine-translation/blob/main/Huggingface_Pretrained_Model.ipynb
 from src.data.utils import  CustomDataset, split_dataSet
-from src.model.model import model_print
+from src.model.model import model_print, MODEL_NAMES_LIST
 from transformers import Trainer, TrainingArguments  
 from pytorch_lightning.callbacks import ModelCheckpoint
 from datasets import DatasetDict, load_from_disk
 import os 
+import argparse 
 
-tokenizer, model = model_print()
+
 data_path = "./src/data"
 ko_dir = os.path.join(data_path,"ko_shuffle.txt")
 en_dir = os.path.join(data_path, "en_shuffle.txt")  
@@ -16,11 +17,22 @@ with open(ko_dir, 'r', encoding='UTF-8') as f:
 with open(en_dir, 'r', encoding='UTF-8') as f:
   en_text = f.readlines()    
 
-# dataSet = CustomDataset(ko_text, en_text, tokenizer) 
+parser = argparse.ArgumentParser() 
+parser.add_argument(
+       "--model",
+       required=False,
+       type=str,   
+    )   
 
-# train_data, valid_data, test_data = split_dataSet(dataSet, 0.7, 0.2) 
+args = parser.parse_args()    
+model_name = args.model if args.model else input("Model Name >> ") 
+if model_name in MODEL_NAMES_LIST.keys():
+  print(f"{model_name} training을 시작합니다===============") 
+else:
+  print(f"{model_name}모델은 은 리스트에 없습니다")
+  
 
- 
+tokenizer, model = model_print(model_name)   
 dataSet = CustomDataset(ko_text, en_text, tokenizer)  
 train_data, valid_data, test_data = split_dataSet(dataSet, 0.7, 0.2)  
 dataset = DatasetDict({
@@ -29,11 +41,6 @@ dataset = DatasetDict({
     "test": test_data,
 })  
 
-try:
-  if not os.path.exists('./output'):
-      os.makedirs('./output')   
-except:
-   pass  
 
 # fine-tuning the model   
 training_args = TrainingArguments(
@@ -47,10 +54,7 @@ training_args = TrainingArguments(
     save_steps=100,
     save_total_limit=5,
     do_eval=True,
-    save_strategy='epoch',       
-    # predict_with_generate=True,  seq2seqtrainer 가 매개변수로 갖는것
-    # fp16=True,
-    # load_best_model_at_end= True,
+    save_strategy='epoch',     
     weight_decay=0.01     
 )    
 
@@ -62,6 +66,6 @@ trainer = Trainer(
     eval_dataset=valid_data,    
 )      
 
-if __name__ == "__main__":     
-    trainer.train()   
-    trainer.save_model('./output')
+if __name__ == "__main__":   
+  trainer.train()   
+  trainer.save_model('./output')
