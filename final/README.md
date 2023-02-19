@@ -6,7 +6,6 @@ final
 ├─ eval.py
 ├─ main.py
 ├─ output
-│  └─ config.json
 ├─ predict.py
 ├─ README.md
 ├─ requirements.txt
@@ -15,7 +14,8 @@ final
 │  ├─ API
 │  │  └─ api.py
 │  ├─ data
-│  │  └─ sample_data.json
+│  │  ├─ sample_data.json
+│  │  └─ utils.py
 │  └─ model
 │     └─ model.py
 ├─ stopwords.txt
