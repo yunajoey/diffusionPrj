@@ -17,7 +17,7 @@ import os
 torch.manual_seed(0)
 
 data_path = "./src/data"
-data_file = "dataSet.json"
+data_file = "sample_data.json"
 path = os.path.join(data_path, data_file)
 
 with open(path,'r', encoding='UTF8') as f:
@@ -30,8 +30,8 @@ df_eng = df_shuffle['en']
 df_kor = df_shuffle['ko']
 
 
-ko_dir = os.path.join(data_path,"ko_shuffle2.txt")
-en_dir = os.path.join(data_path, "en_shuffle2.txt")  
+ko_dir = os.path.join(data_path,"ko_shuffle.txt")
+en_dir = os.path.join(data_path, "en_shuffle.txt")  
 
 
 df_kor.to_csv(ko_dir, sep = '\n', index = False, header=None)
