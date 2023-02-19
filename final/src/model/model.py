@@ -18,17 +18,22 @@ MODEL_CLASSES = {
 }  
 
 
-MODEL_NAMES_LIST = {   
-      "facebook": "facebook/mbart-large-cc25",  
-      "t5": "t5-small",
+MODEL_NAMES_LIST = {    
+      
+       "QuoA": "QuoQA-NLP/KE-T5-Ko2En-Base"
 }   
       
 model_class, tokenizer_class = MODEL_CLASSES['Auto']   
 
-tokenizer = model_class.from_pretrained("t5-small")  
-model = tokenizer_class.from_pretrained("t5-small")
+
+def model_print(model_name):   
+    tokenizer = model_class.from_pretrained(MODEL_NAMES_LIST[model_name])  
+    model = tokenizer_class.from_pretrained(MODEL_NAMES_LIST[model_name])
+    return tokenizer, model
 
 
 
 
 
+
+  
