@@ -1,4 +1,3 @@
-# 프로젝트구조
 
 ```
 final
@@ -7,6 +6,7 @@ final
 ├─ eval.py
 ├─ main.py
 ├─ output
+│  └─ config.json
 ├─ predict.py
 ├─ README.md
 ├─ requirements.txt
@@ -15,9 +15,7 @@ final
 │  ├─ API
 │  │  └─ api.py
 │  ├─ data
-│  │  ├─ dataSet.json
-│  │  ├─ sample_data.json
-│  │  └─ utils.py
+│  │  └─ sample_data.json
 │  └─ model
 │     └─ model.py
 ├─ stopwords.txt
