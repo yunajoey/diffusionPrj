@@ -27,7 +27,8 @@ final
 
 
 ## 사용법 ## 
-1. 모델을 사용할 경우 
+<b> 1. 모델을 사용할 경우 <b>
+
 Step1.
 - python train.py   
 - Model Name >> [사용할모델이름]
@@ -38,6 +39,6 @@ Step2.
 Step3.(option)
 - python predict.py --text [번역하고 싶은 문장]
 
-2. API를 사용할 경우 
+<b> 2. API를 사용할 경우 <b>
 - python main.py (default값이  google API)
 - python main.py --api [사용할API]
