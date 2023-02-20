@@ -8,8 +8,8 @@ from transformers import (
         AutoTokenizer,
 )     
 device = torch.device('cude:0' if torch.cuda.is_available() else 'cpu')
-model = AutoModelForSeq2SeqLM.from_pretrained('checkpoint/checkpoint-16')
-tokenizer = AutoTokenizer.from_pretrained('checkpoint/checkpoint-16')
+model = AutoModelForSeq2SeqLM.from_pretrained('QuoQA-NLP/KE-T5-Ko2En-Base')
+tokenizer = AutoTokenizer.from_pretrained('QuoQA-NLP/KE-T5-Ko2En-Base')
     
 parser = argparse.ArgumentParser() 
 parser.add_argument( 

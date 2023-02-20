@@ -3,7 +3,7 @@ from src.data.utils import  CustomDataset, split_dataSet
 from src.model.model import model_print, MODEL_NAMES_LIST
 from transformers import Trainer, TrainingArguments  
 from pytorch_lightning.callbacks import ModelCheckpoint
-from datasets import DatasetDict, load_from_disk
+from datasets import DatasetDict
 import os 
 import argparse 
 

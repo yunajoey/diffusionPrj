@@ -26,12 +26,6 @@ device = torch.device('cude:0' if torch.cuda.is_available() else 'cpu')
 model = AutoModelForSeq2SeqLM.from_pretrained('QuoQA-NLP/KE-T5-Ko2En-Base')
 tokenizer = AutoTokenizer.from_pretrained('QuoQA-NLP/KE-T5-Ko2En-Base')
 
-# print('패키지 NLTK의 BLEU :',bleu.sentence_bleu(list(map(lambda ref: ref.split(), references)),candidate.split()))
-
-# # 한문장 
-# model_generate_input = tokenizer.prepare_seq2seq_batch(ko_text[0], return_tensors="pt").to(device)
-# translated = model.generate(**model_generate_input)
-# decoded_text = [tokenizer.decode(t, skip_special_tokens=True) for t in translated]
 
 pred_trgs = list()
 original_tags = list()
